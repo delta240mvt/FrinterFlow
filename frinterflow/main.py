@@ -50,7 +50,7 @@ def run():
 
     transcriber = Transcriber(result_queue=raw_q)
     recorder    = AudioRecorder(result_queue=audio_q)
-    overlay     = FrinterOverlay(transcript_queue=tui_q)
+    overlay     = FrinterOverlay(transcript_queue=tui_q, audio_queue=audio_q)
 
     # --- Load Whisper model (blocking, show terminal progress) ---
     _print()
@@ -99,12 +99,18 @@ def run():
 
     # --- Hotkey callbacks ---
     def on_start():
-        overlay.set_status("LISTENING")
-        recorder.start()
+        if overlay.live_mode:
+            overlay.start_live()
+        else:
+            overlay.set_status("LISTENING")
+            recorder.start()
 
     def on_stop():
-        recorder.stop()
-        overlay.set_status("PROCESSING")
+        if overlay.live_mode:
+            overlay.stop_live()
+        else:
+            recorder.stop()
+            overlay.set_status("PROCESSING")
 
     hotkeys = PushToTalkListener(on_start=on_start, on_stop=on_stop)
     hotkeys.start()

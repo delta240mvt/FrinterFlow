@@ -18,6 +18,7 @@ import os
 import math
 import time
 import queue
+import threading
 import tkinter as tk
 from datetime import datetime
 
@@ -34,8 +35,9 @@ from frinterflow.config import (
 
 class FrinterOverlay:
 
-    def __init__(self, transcript_queue: queue.Queue):
+    def __init__(self, transcript_queue: queue.Queue, audio_queue: queue.Queue = None):
         self.transcript_queue = transcript_queue
+        self.audio_queue = audio_queue
         self.root = tk.Tk()
         self._drag_x = 0
         self._drag_y = 0
@@ -187,6 +189,21 @@ class FrinterOverlay:
         mic_btn.pack(side=tk.RIGHT, padx=(0, 2), pady=2)
         mic_btn.bind("<Button-1>", lambda _: self._test_mic())
 
+        self._live_btn = tk.Label(
+            bar,
+            text=" LIVE ",
+            bg=COLOR_FOCUS,
+            fg="#1a1a2e",
+            font=("Consolas", 9, "bold"),
+            cursor="hand2",
+            padx=6,
+            pady=3,
+        )
+        self._live_btn.pack(side=tk.RIGHT, padx=(0, 2), pady=2)
+        self._live_btn.bind("<Button-1>", lambda _: self._toggle_live_mode())
+        self.live_mode = False          # tryb LIVE wl/wyl (przyciskiem)
+        self._live_stop_event = None    # kontroluje worker gdy nagrywa
+
     def _idle_text(self) -> str:
         return "  GOTOWY  |  LCTRL+SHIFT = start/stop"
 
@@ -217,6 +234,64 @@ class FrinterOverlay:
                 self.root.after(0, self.status_var.set, self._idle_text())
 
         threading.Thread(target=_run, daemon=True).start()
+
+    def _toggle_live_mode(self):
+        """Toggle live mode on/off (button). Recording still starts via LCTRL+SHIFT."""
+        self.live_mode = not self.live_mode
+        if self.live_mode:
+            self._live_btn.config(text=" LIVE ", bg="#e05050", fg="#ffffff")
+            self._append("[LIVE] tryb wlaczony — LCTRL+SHIFT aby nagrac\n", "listening")
+        else:
+            self._live_btn.config(text=" LIVE ", bg=COLOR_FOCUS, fg="#1a1a2e")
+            self._append("[LIVE] tryb wylaczony\n", "dim")
+
+    def start_live(self):
+        """Called from main thread via hotkey — starts chunked live recording."""
+        if self._live_stop_event and not self._live_stop_event.is_set():
+            return  # already running
+        self._live_stop_event = threading.Event()
+        self.root.after(0, self.status_var.set, "  LIVE — nagrywam...")
+        self._append("[LIVE] nagrywam...\n", "listening")
+        threading.Thread(target=self._live_worker,
+                         args=(self._live_stop_event,), daemon=True).start()
+
+    def stop_live(self):
+        """Called from main thread via hotkey — stops live recording."""
+        if self._live_stop_event:
+            self._live_stop_event.set()
+        self.root.after(0, self.status_var.set, "  LIVE — transkrybuje...")
+
+    def _live_worker(self, stop_event):
+        import numpy as np
+        import scipy.io.wavfile as wav_io
+        import tempfile
+        try:
+            import sounddevice as sd
+        except ImportError:
+            self.root.after(0, self._append, "[LIVE ERROR] brak sounddevice\n", "dim")
+            return
+
+        CHUNK_SEC = 4
+        SR = 44100
+
+        while not stop_event.is_set():
+            try:
+                data = sd.rec(int(CHUNK_SEC * SR), samplerate=SR,
+                              channels=1, dtype="float32", blocking=True)
+                if stop_event.is_set():
+                    break
+                audio_int16 = (data * 32767).astype(np.int16)
+                tmp = tempfile.NamedTemporaryFile(suffix=".wav", delete=False)
+                wav_io.write(tmp.name, SR, audio_int16)
+                tmp.close()
+                if self.audio_queue:
+                    self.audio_queue.put(tmp.name)
+                else:
+                    import os as _os
+                    _os.unlink(tmp.name)
+            except Exception as e:
+                self.root.after(0, self._append, f"[LIVE ERROR] {e}\n", "dim")
+                break
 
     # ------------------------------------------------------------------
     # Thread-safe public API (safe to call from ANY thread)
