@@ -1,7 +1,8 @@
 # frinterflow/hotkeys.py
 """
-Global push-to-talk listener using pynput.
-Triggers callbacks when BOTH Left CTRL and SHIFT are held simultaneously.
+Toggle-to-talk listener using pynput.
+First press of LCTRL+SHIFT = start recording.
+Second press of LCTRL+SHIFT = stop recording.
 Runs in its own daemon thread (pynput creates this automatically).
 """
 from pynput import keyboard
@@ -12,13 +13,14 @@ from frinterflow.config import HOTKEY_TRIGGER
 class PushToTalkListener:
     def __init__(self, on_start, on_stop):
         """
-        on_start: callable() — called when trigger combo is first pressed
-        on_stop:  callable() — called when either trigger key is released
+        on_start: callable() — called on first LCTRL+SHIFT press (recording starts)
+        on_stop:  callable() — called on second LCTRL+SHIFT press (recording stops)
         """
         self.on_start = on_start
         self.on_stop = on_stop
         self._held: set = set()
-        self._active: bool = False
+        self._recording: bool = False
+        self._combo_fired: bool = False  # prevents repeat-fire while holding
         self._listener: keyboard.Listener | None = None
 
     def start(self):
@@ -37,16 +39,20 @@ class PushToTalkListener:
 
     def _on_press(self, key):
         self._held.add(self._norm(key))
-        if HOTKEY_TRIGGER.issubset(self._held) and not self._active:
-            self._active = True
-            self.on_start()
+        if HOTKEY_TRIGGER.issubset(self._held) and not self._combo_fired:
+            self._combo_fired = True
+            if not self._recording:
+                self._recording = True
+                self.on_start()
+            else:
+                self._recording = False
+                self.on_stop()
 
     def _on_release(self, key):
         k = self._norm(key)
         self._held.discard(k)
-        if k in HOTKEY_TRIGGER and self._active:
-            self._active = False
-            self.on_stop()
+        if k in HOTKEY_TRIGGER:
+            self._combo_fired = False  # allow next press to fire again
 
     @staticmethod
     def _norm(key) -> str:

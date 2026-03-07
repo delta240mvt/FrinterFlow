@@ -41,9 +41,9 @@ class FrinterOverlay:
         self._drag_y = 0
         self._status = "IDLE"
         self._setup_window()
+        self._setup_statusbar()   # BOTTOM must be packed first
         self._setup_bot_canvas()
         self._setup_transcript()
-        self._setup_statusbar()
         self._show_welcome()
 
     # ------------------------------------------------------------------
@@ -69,6 +69,9 @@ class FrinterOverlay:
         # Dragging
         r.bind("<ButtonPress-1>", self._on_drag_start)
         r.bind("<B1-Motion>", self._on_drag_motion)
+
+        # Escape to close
+        r.bind("<Escape>", lambda _: os._exit(0))
 
     def _on_drag_start(self, event):
         self._drag_x = event.x
@@ -128,7 +131,7 @@ class FrinterOverlay:
 
     def _show_welcome(self):
         self._append("Frinter Flow v1.0 — ", tag="ts")
-        self._append("Trzymaj LEWY CTRL + SHIFT, by mowic.\n", tag="dim")
+        self._append("LCTRL+SHIFT = start/stop nagrywania.\n", tag="dim")
 
     def _append(self, text: str, tag: str = "text"):
         """Must be called from main thread only."""
@@ -160,18 +163,60 @@ class FrinterOverlay:
 
         close_btn = tk.Label(
             bar,
-            text="  [X]  ",
-            bg=COLOR_DIM,
-            fg=COLOR_RELATION,
+            text=" X ZAMKNIJ ",
+            bg=COLOR_RELATION,
+            fg="#ffffff",
             font=("Consolas", 9, "bold"),
             cursor="hand2",
-            pady=2,
+            padx=6,
+            pady=3,
         )
-        close_btn.pack(side=tk.RIGHT)
+        close_btn.pack(side=tk.RIGHT, padx=4, pady=2)
         close_btn.bind("<Button-1>", lambda _: os._exit(0))
 
+        mic_btn = tk.Label(
+            bar,
+            text=" MIC TEST ",
+            bg=COLOR_BLOOM,
+            fg="#ffffff",
+            font=("Consolas", 9, "bold"),
+            cursor="hand2",
+            padx=6,
+            pady=3,
+        )
+        mic_btn.pack(side=tk.RIGHT, padx=(0, 2), pady=2)
+        mic_btn.bind("<Button-1>", lambda _: self._test_mic())
+
     def _idle_text(self) -> str:
-        return "  GOTOWY  |  Log: ~/frinterflow_log.txt"
+        return "  GOTOWY  |  LCTRL+SHIFT = start/stop"
+
+    def _test_mic(self):
+        """Record 2 seconds and show RMS volume level in transcript."""
+        import threading
+        import numpy as np
+        try:
+            import sounddevice as sd
+        except ImportError:
+            self.root.after(0, self._append, "[MIC TEST] sounddevice nie zainstalowany\n", "dim")
+            return
+
+        def _run():
+            try:
+                self.root.after(0, self.status_var.set, "  Nagrywam 2 sek testu...")
+                data = sd.rec(int(2 * 44100), samplerate=44100, channels=1,
+                              dtype="float32", blocking=True)
+                rms = float(np.sqrt(np.mean(data ** 2)))
+                bars = int(rms * 500)
+                bar_str = "#" * min(bars, 20)
+                level = "CICHO" if rms < 0.01 else ("OK" if rms < 0.1 else "GLOSNO")
+                msg = f"[MIC TEST] RMS={rms:.4f} [{bar_str:<20}] {level}\n"
+                self.root.after(0, self._append, msg, "ts" if level == "OK" else "dim")
+                self.root.after(0, self.status_var.set, self._idle_text())
+            except Exception as e:
+                self.root.after(0, self._append, f"[MIC ERROR] {e}\n", "dim")
+                self.root.after(0, self.status_var.set, self._idle_text())
+
+        threading.Thread(target=_run, daemon=True).start()
 
     # ------------------------------------------------------------------
     # Thread-safe public API (safe to call from ANY thread)

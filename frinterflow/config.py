@@ -10,7 +10,7 @@ COLOR_DIM      = "#0d0d1a"   # Darker — status bar background
 COLOR_TEXT     = "#e0e0e0"   # Primary text
 
 # --- Whisper Model ---
-WHISPER_MODEL_SIZE   = "small"   # tiny | base | small | medium | large-v3
+WHISPER_MODEL_SIZE   = "medium"  # tiny | base | small | medium | large-v3
 WHISPER_DEVICE       = "cpu"     # "cpu" or "cuda"
 WHISPER_COMPUTE_TYPE = "int8"    # "int8" (CPU) or "float16" (GPU)
 WHISPER_LANGUAGE     = "pl"      # "pl" | "en" | None (auto-detect)
@@ -26,7 +26,7 @@ HOTKEY_TRIGGER = {"Key.ctrl_l", "Key.shift"}
 # --- Overlay Window ---
 OVERLAY_PIXEL_SIZE    = 5     # px per sprite cell -> 12 cells * 5px = 60px bot width
 OVERLAY_WIDTH         = 640   # Total overlay width in px
-OVERLAY_HEIGHT        = 120   # Total overlay height in px
+OVERLAY_HEIGHT        = 150   # Total overlay height in px
 OVERLAY_ALPHA         = 0.92  # 0.0 = invisible, 1.0 = fully opaque
 OVERLAY_MARGIN_BOTTOM = 48    # Distance from bottom of screen (px, clears taskbar)
 OVERLAY_FONT          = ("Consolas", 11)

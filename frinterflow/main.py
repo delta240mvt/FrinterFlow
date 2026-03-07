@@ -1,11 +1,9 @@
 import os
 os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"  # MUST be first — PyInstaller/OpenMP fix
 
+import sys
 import queue
 import threading
-
-from rich.console import Console
-from rich.progress import Progress, SpinnerColumn, TextColumn
 
 from frinterflow.audio import AudioRecorder
 from frinterflow.transcriber import Transcriber
@@ -13,7 +11,10 @@ from frinterflow.hotkeys import PushToTalkListener
 from frinterflow.logger import append_entry
 from frinterflow.overlay import FrinterOverlay
 
-console = Console()
+
+def _print(text=""):
+    """Print to terminal, safely ignoring unencodable characters."""
+    print(text, flush=True)
 
 try:
     import winsound
@@ -52,21 +53,24 @@ def run():
     overlay     = FrinterOverlay(transcript_queue=tui_q)
 
     # --- Load Whisper model (blocking, show terminal progress) ---
-    console.print(
-        "\n[bold #4a8d83]FrinterFlow v1.0[/] — [dim]loading Whisper model...[/]"
-    )
-    with Progress(
-        SpinnerColumn(),
-        TextColumn("[#d6b779]{task.description}"),
-        console=console,
-        transient=True,
-    ) as progress:
-        task = progress.add_task("Loading model...", total=None)
-        transcriber.load_model()
-        progress.update(task, description="Model ready!")
+    _print()
+    _print("-" * 50)
+    _print("  FRINTER FLOW v1.0")
+    _print("-" * 50)
+    _print(f"  Model:      {transcriber.model_size} (faster-whisper)")
+    _print("  Jezyk:      polski")
+    _print("  Urzadzenie: CPU / int8")
+    _print("-" * 50)
+    _print("  Ladowanie modelu Whisper...")
+    _print("  (pierwsze uruchomienie: pobieranie ~500 MB, 30-60 sek)")
+    _print()
 
-    console.print("[bold #4a8d83]Model loaded.[/] Overlay launched.")
-    console.print("[dim]You can minimize this terminal.[/]\n")
+    transcriber.load_model()
+
+    _print("  [OK] Model zaladowany.")
+    _print("  Overlay uruchomiony - mozesz zminimalizowac terminal.")
+    _print("  Trzymaj LEWY CTRL + SHIFT zeby mowic.")
+    _print()
 
     # --- Fanout dispatcher: raw_q → tui_q + log_q ---
     def fanout():
@@ -86,8 +90,9 @@ def run():
     def audio_watcher():
         while True:
             wav_path = audio_q.get()
+            _print(f"[DEBUG] WAV gotowy: {wav_path}")
             overlay.set_status("PROCESSING")
-            transcriber.transcribe_async(wav_path)
+            transcriber.transcribe_async(wav_path, on_done=lambda: overlay.set_status("IDLE"))
 
     for fn in (fanout, log_worker, audio_watcher):
         threading.Thread(target=fn, daemon=True).start()

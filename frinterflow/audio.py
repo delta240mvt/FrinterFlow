@@ -48,7 +48,8 @@ class AudioRecorder:
                 while not self._stop_event.is_set():
                     data, _ = stream.read(1024)
                     chunks.append(data.copy())
-        except Exception:
+        except Exception as e:
+            print(f"[AUDIO ERROR] {e}", flush=True)
             return
 
         if not chunks:
