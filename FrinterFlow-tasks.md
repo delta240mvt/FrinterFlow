@@ -1104,8 +1104,8 @@ Mark each `[ ]` as `[x]` when complete. Do not proceed to the next task if the c
 ```
 [x] TASK-040  Write frinterflow/transcriber.py (Section 8)
 [x] TASK-041  Run pre-download command to cache Whisper model locally (Section 12)
-[ ] TASK-042  Manual test: transcribe a real .wav file, verify non-empty string returned in queue
-[ ] TASK-043  Manual test: call transcribe_async twice in parallel — verify _lock prevents crash
+[x] TASK-042  Manual test: transcribe a real .wav file, verify non-empty string returned in queue
+[x] TASK-043  Manual test: call transcribe_async twice in parallel — verify _lock prevents crash
 [x] TASK-044  Run tests/test_transcriber.py — 3/3 passed incl. model load (Whisper small, 613s)
 ```
 
@@ -1113,9 +1113,9 @@ Mark each `[ ]` as `[x]` when complete. Do not proceed to the next task if the c
 
 ```
 [x] TASK-050  Write frinterflow/hotkeys.py (Section 9)
-[ ] TASK-051  Manual test: run PushToTalkListener standalone, print on_start/on_stop to terminal
-[ ] TASK-052  Verify both Left CTRL and SHIFT must be held — single key must not trigger
-[ ] TASK-053  Verify releasing either key triggers on_stop
+[x] TASK-051  Manual test: run PushToTalkListener standalone, print on_start/on_stop to terminal
+[x] TASK-052  Verify both Left CTRL and SHIFT must be held — single key must not trigger
+[x] TASK-053  Verify releasing either key triggers on_stop
 ```
 
 ### PHASE 6 — Logger
@@ -1130,16 +1130,16 @@ Mark each `[ ]` as `[x]` when complete. Do not proceed to the next task if the c
 
 ```
 [x] TASK-070  Write frinterflow/overlay.py (Section 6) — full FrinterOverlay class
-[ ] TASK-071  Smoke test: python -c "import queue; from frinterflow.overlay import FrinterOverlay; FrinterOverlay(queue.Queue()).run()"
+[x] TASK-071  Smoke test: python -c "import queue; from frinterflow.overlay import FrinterOverlay; FrinterOverlay(queue.Queue()).run()"
               — overlay must appear at bottom of screen, bot must animate, window must be always-on-top
-[ ] TASK-072  Verify: window is frameless (no title bar)
-[ ] TASK-073  Verify: window is semi-transparent (OVERLAY_ALPHA applied)
-[ ] TASK-074  Verify: clicking [X] label closes the app (os._exit)
-[ ] TASK-075  Verify: window is draggable by clicking anywhere on it
-[ ] TASK-076  Verify: bot pixel art uses correct colors (teal body, violet eyes, gold antenna)
-[ ] TASK-077  Verify: bot bobs up and down (sine animation, 8fps)
-[ ] TASK-078  Manual test: call overlay.set_status("LISTENING") from a thread — status bar must update
-[ ] TASK-079  Manual test: put text in transcript_queue — text must appear in overlay
+[x] TASK-072  Verify: window is frameless (no title bar)
+[x] TASK-073  Verify: window is semi-transparent (OVERLAY_ALPHA applied)
+[x] TASK-074  Verify: clicking [X] label closes the app (os._exit)
+[x] TASK-075  Verify: window is draggable by clicking anywhere on it
+[x] TASK-076  Verify: bot pixel art uses correct colors (teal body, violet eyes, gold antenna)
+[x] TASK-077  Verify: bot bobs up and down (sine animation, 8fps)
+[x] TASK-078  Manual test: call overlay.set_status("LISTENING") from a thread — status bar must update
+[x] TASK-079  Manual test: put text in transcript_queue — text must appear in overlay
 [x] TASK-080  Run tests/test_overlay.py
 ```
 
@@ -1147,14 +1147,14 @@ Mark each `[ ]` as `[x]` when complete. Do not proceed to the next task if the c
 
 ```
 [x] TASK-090  Write frinterflow/main.py (Section 11) — KMP fix as FIRST LINE
-[ ] TASK-091  Verify: frinterflow command launches, shows model loading in terminal, then overlay appears
-[ ] TASK-092  Verify: terminal shows "Overlay launched — you can minimize this terminal"
-[ ] TASK-093  Verify: holding LCTRL+SHIFT shows SLUCHAM status in overlay
-[ ] TASK-094  Verify: releasing keys shows TRANSKRYBUJE status, then transcript appears
-[ ] TASK-095  Verify: transcript is appended to ~/frinterflow_log.txt with correct timestamp
-[ ] TASK-096  Verify: audio beep plays after transcript appears
-[ ] TASK-097  Verify: multiple sequential dictations work without restart
-[ ] TASK-098  Verify: simultaneous transcriptions don't crash (Transcriber._lock)
+[x] TASK-091  Verify: frinterflow command launches, shows model loading in terminal, then overlay appears
+[x] TASK-092  Verify: terminal shows "Overlay launched — you can minimize this terminal"
+[x] TASK-093  Verify: holding LCTRL+SHIFT shows SLUCHAM status in overlay
+[x] TASK-094  Verify: releasing keys shows TRANSKRYBUJE status, then transcript appears
+[x] TASK-095  Verify: transcript is appended to ~/frinterflow_log.txt with correct timestamp
+[x] TASK-096  Verify: audio beep plays after transcript appears
+[x] TASK-097  Verify: multiple sequential dictations work without restart
+[x] TASK-098  Verify: simultaneous transcriptions don't crash (Transcriber._lock)
 ```
 
 ### PHASE 9 — Packaging & Distribution
@@ -1163,7 +1163,7 @@ Mark each `[ ]` as `[x]` when complete. Do not proceed to the next task if the c
 [x] TASK-100  Verify: pip install -e . (editable) works cleanly
 [ ] TASK-101  Verify: uvx frinterflow (after PyPI publish — skip if pre-publish)
 [x] TASK-102  Build wheel: hatch build → verify dist/ contains .whl and .tar.gz
-[ ] TASK-103  Build .exe: pyinstaller command from Section 13
+[x] TASK-103  Build .exe: pyinstaller command from Section 13
 [ ] TASK-104  Test .exe on a machine without Python installed
 [ ] TASK-105  Verify .exe: overlay appears, transcription works, log file created
 ```
