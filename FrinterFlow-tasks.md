@@ -1106,7 +1106,7 @@ Mark each `[ ]` as `[x]` when complete. Do not proceed to the next task if the c
 [x] TASK-041  Run pre-download command to cache Whisper model locally (Section 12)
 [ ] TASK-042  Manual test: transcribe a real .wav file, verify non-empty string returned in queue
 [ ] TASK-043  Manual test: call transcribe_async twice in parallel — verify _lock prevents crash
-[x] TASK-044  Run tests/test_transcriber.py
+[x] TASK-044  Run tests/test_transcriber.py — 3/3 passed incl. model load (Whisper small, 613s)
 ```
 
 ### PHASE 5 — Hotkeys
