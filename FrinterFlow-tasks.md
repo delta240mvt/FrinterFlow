@@ -1064,55 +1064,55 @@ Mark each `[ ]` as `[x]` when complete. Do not proceed to the next task if the c
 ### PHASE 0 — Project Scaffolding
 
 ```
-[ ] TASK-001  Create directory structure as specified in Section 2
-[ ] TASK-002  Create frinterflow/__init__.py (empty or version string)
-[ ] TASK-003  Write pyproject.toml (Section 3) — include all classifiers and urls
-[ ] TASK-004  Create requirements.txt from Section 3 dependencies
-[ ] TASK-005  Write LICENSE file (MIT, year 2025, author = FrinterFlow Contributors)
-[ ] TASK-006  Verify: pip install -e ".[dev]" runs without errors
-[ ] TASK-007  Verify: frinterflow --help or frinterflow raises ImportError (not yet implemented, that's OK)
+[x] TASK-001  Create directory structure as specified in Section 2
+[x] TASK-002  Create frinterflow/__init__.py (empty or version string)
+[x] TASK-003  Write pyproject.toml (Section 3) — include all classifiers and urls
+[x] TASK-004  Create requirements.txt from Section 3 dependencies
+[x] TASK-005  Write LICENSE file (MIT, year 2025, author = FrinterFlow Contributors)
+[x] TASK-006  Verify: pip install -e ".[dev]" runs without errors
+[x] TASK-007  Verify: frinterflow --help or frinterflow raises ImportError (not yet implemented, that's OK)
 ```
 
 ### PHASE 1 — Configuration
 
 ```
-[ ] TASK-010  Write frinterflow/config.py (Section 4) — all constants, no hardcodes elsewhere
-[ ] TASK-011  Verify: python -c "from frinterflow.config import COLOR_BLOOM; print(COLOR_BLOOM)" prints #4a8d83
+[x] TASK-010  Write frinterflow/config.py (Section 4) — all constants, no hardcodes elsewhere
+[x] TASK-011  Verify: python -c "from frinterflow.config import COLOR_BLOOM; print(COLOR_BLOOM)" prints #4a8d83
 ```
 
 ### PHASE 2 — Sprites
 
 ```
-[ ] TASK-020  Write frinterflow/sprites.py — all 5 sprite matrices + SPRITE_COLOR_MAP + draw_sprite_on_canvas()
-[ ] TASK-021  Verify all sprite names: tree, heart, brain, bot, wave
-[ ] TASK-022  Verify bot sprite: 12 rows × 12 cols, cells 1/2/3 all present
-[ ] TASK-023  Verify wave sprite: 8 rows × 12 cols
-[ ] TASK-024  Run tests/test_sprites.py — all must pass
+[x] TASK-020  Write frinterflow/sprites.py — all 5 sprite matrices + SPRITE_COLOR_MAP + draw_sprite_on_canvas()
+[x] TASK-021  Verify all sprite names: tree, heart, brain, bot, wave
+[x] TASK-022  Verify bot sprite: 12 rows × 12 cols, cells 1/2/3 all present
+[x] TASK-023  Verify wave sprite: 8 rows × 12 cols
+[x] TASK-024  Run tests/test_sprites.py — all must pass
 ```
 
 ### PHASE 3 — Audio
 
 ```
-[ ] TASK-030  Write frinterflow/audio.py (Section 7)
-[ ] TASK-031  Manual test: record 1 second, verify .wav file created in temp dir
-[ ] TASK-032  Manual test: start + stop + start again — verify no thread leak
-[ ] TASK-033  Run tests/test_audio.py
+[x] TASK-030  Write frinterflow/audio.py (Section 7)
+[x] TASK-031  Manual test: record 1 second, verify .wav file created in temp dir
+[x] TASK-032  Manual test: start + stop + start again — verify no thread leak
+[x] TASK-033  Run tests/test_audio.py
 ```
 
 ### PHASE 4 — Transcription
 
 ```
-[ ] TASK-040  Write frinterflow/transcriber.py (Section 8)
-[ ] TASK-041  Run pre-download command to cache Whisper model locally (Section 12)
+[x] TASK-040  Write frinterflow/transcriber.py (Section 8)
+[x] TASK-041  Run pre-download command to cache Whisper model locally (Section 12)
 [ ] TASK-042  Manual test: transcribe a real .wav file, verify non-empty string returned in queue
 [ ] TASK-043  Manual test: call transcribe_async twice in parallel — verify _lock prevents crash
-[ ] TASK-044  Run tests/test_transcriber.py
+[x] TASK-044  Run tests/test_transcriber.py
 ```
 
 ### PHASE 5 — Hotkeys
 
 ```
-[ ] TASK-050  Write frinterflow/hotkeys.py (Section 9)
+[x] TASK-050  Write frinterflow/hotkeys.py (Section 9)
 [ ] TASK-051  Manual test: run PushToTalkListener standalone, print on_start/on_stop to terminal
 [ ] TASK-052  Verify both Left CTRL and SHIFT must be held — single key must not trigger
 [ ] TASK-053  Verify releasing either key triggers on_stop
@@ -1121,15 +1121,15 @@ Mark each `[ ]` as `[x]` when complete. Do not proceed to the next task if the c
 ### PHASE 6 — Logger
 
 ```
-[ ] TASK-060  Write frinterflow/logger.py (Section 10)
-[ ] TASK-061  Verify: append_entry("test") creates ~/frinterflow_log.txt with [HH:MM:SS] test
-[ ] TASK-062  Verify: calling twice appends (does not overwrite)
+[x] TASK-060  Write frinterflow/logger.py (Section 10)
+[x] TASK-061  Verify: append_entry("test") creates ~/frinterflow_log.txt with [HH:MM:SS] test
+[x] TASK-062  Verify: calling twice appends (does not overwrite)
 ```
 
 ### PHASE 7 — Overlay (Core UI)
 
 ```
-[ ] TASK-070  Write frinterflow/overlay.py (Section 6) — full FrinterOverlay class
+[x] TASK-070  Write frinterflow/overlay.py (Section 6) — full FrinterOverlay class
 [ ] TASK-071  Smoke test: python -c "import queue; from frinterflow.overlay import FrinterOverlay; FrinterOverlay(queue.Queue()).run()"
               — overlay must appear at bottom of screen, bot must animate, window must be always-on-top
 [ ] TASK-072  Verify: window is frameless (no title bar)
@@ -1140,13 +1140,13 @@ Mark each `[ ]` as `[x]` when complete. Do not proceed to the next task if the c
 [ ] TASK-077  Verify: bot bobs up and down (sine animation, 8fps)
 [ ] TASK-078  Manual test: call overlay.set_status("LISTENING") from a thread — status bar must update
 [ ] TASK-079  Manual test: put text in transcript_queue — text must appear in overlay
-[ ] TASK-080  Run tests/test_overlay.py
+[x] TASK-080  Run tests/test_overlay.py
 ```
 
 ### PHASE 8 — Main Entry Point
 
 ```
-[ ] TASK-090  Write frinterflow/main.py (Section 11) — KMP fix as FIRST LINE
+[x] TASK-090  Write frinterflow/main.py (Section 11) — KMP fix as FIRST LINE
 [ ] TASK-091  Verify: frinterflow command launches, shows model loading in terminal, then overlay appears
 [ ] TASK-092  Verify: terminal shows "Overlay launched — you can minimize this terminal"
 [ ] TASK-093  Verify: holding LCTRL+SHIFT shows SLUCHAM status in overlay
@@ -1160,9 +1160,9 @@ Mark each `[ ]` as `[x]` when complete. Do not proceed to the next task if the c
 ### PHASE 9 — Packaging & Distribution
 
 ```
-[ ] TASK-100  Verify: pip install -e . (editable) works cleanly
+[x] TASK-100  Verify: pip install -e . (editable) works cleanly
 [ ] TASK-101  Verify: uvx frinterflow (after PyPI publish — skip if pre-publish)
-[ ] TASK-102  Build wheel: hatch build → verify dist/ contains .whl and .tar.gz
+[x] TASK-102  Build wheel: hatch build → verify dist/ contains .whl and .tar.gz
 [ ] TASK-103  Build .exe: pyinstaller command from Section 13
 [ ] TASK-104  Test .exe on a machine without Python installed
 [ ] TASK-105  Verify .exe: overlay appears, transcription works, log file created
@@ -1171,19 +1171,19 @@ Mark each `[ ]` as `[x]` when complete. Do not proceed to the next task if the c
 ### PHASE 10 — Tests & CI
 
 ```
-[ ] TASK-110  Write all 4 test files (tests/test_*.py)
-[ ] TASK-111  Run pytest tests/ -v — all tests pass
-[ ] TASK-112  Write .github/workflows/ci.yml (Section 17)
-[ ] TASK-113  Push to GitHub — CI must pass (green check)
+[x] TASK-110  Write all 4 test files (tests/test_*.py)
+[x] TASK-111  Run pytest tests/ -v — all tests pass
+[x] TASK-112  Write .github/workflows/ci.yml (Section 17)
+[x] TASK-113  Push to GitHub — CI must pass (green check)
 ```
 
 ### PHASE 11 — Documentation
 
 ```
-[ ] TASK-120  Verify README.md is complete and accurate (Installation, Usage, Config, FAQ sections)
-[ ] TASK-121  Write CONTRIBUTING.md (code style, sprite addition guide, PR checklist)
-[ ] TASK-122  Verify pyproject.toml URLs point to correct GitHub repo
-[ ] TASK-123  Update version in pyproject.toml to match git tag
+[x] TASK-120  Verify README.md is complete and accurate (Installation, Usage, Config, FAQ sections)
+[x] TASK-121  Write CONTRIBUTING.md (code style, sprite addition guide, PR checklist)
+[x] TASK-122  Verify pyproject.toml URLs point to correct GitHub repo
+[x] TASK-123  Update version in pyproject.toml to match git tag
 ```
 
 ---
@@ -1192,21 +1192,21 @@ Mark each `[ ]` as `[x]` when complete. Do not proceed to the next task if the c
 
 Before any UI review, verify ALL of these:
 
-- [ ] Background color is `#1a1a2e` (dark navy) — no pure black `#000000`
-- [ ] Status/success uses Bloom Turkus `#4a8d83`
-- [ ] Listening/focus uses Focus Gold `#d6b779`
-- [ ] Bot eyes use Relation Violet `#8a4e64`
-- [ ] Bot antenna/glow uses Focus Gold `#d6b779`
-- [ ] Overlay is semi-transparent (`OVERLAY_ALPHA = 0.92`)
-- [ ] Overlay is frameless (`overrideredirect=True`)
-- [ ] Overlay is always on top (`-topmost True`)
-- [ ] Overlay starts at bottom-center of screen
-- [ ] Overlay is draggable
-- [ ] Bot pixel art is 12×12 cells at `OVERLAY_PIXEL_SIZE` px per cell
-- [ ] Bot bobs smoothly (sine wave, 8 FPS, no jitter)
-- [ ] Text font is monospace (Consolas or Courier)
-- [ ] Close button is visible and functional
-- [ ] Status bar shows current state (GOTOWY / SLUCHAM / TRANSKRYBUJE)
+- [x] Background color is `#1a1a2e` (dark navy) — no pure black `#000000`
+- [x] Status/success uses Bloom Turkus `#4a8d83`
+- [x] Listening/focus uses Focus Gold `#d6b779`
+- [x] Bot eyes use Relation Violet `#8a4e64`
+- [x] Bot antenna/glow uses Focus Gold `#d6b779`
+- [x] Overlay is semi-transparent (`OVERLAY_ALPHA = 0.92`)
+- [x] Overlay is frameless (`overrideredirect=True`)
+- [x] Overlay is always on top (`-topmost True`)
+- [x] Overlay starts at bottom-center of screen
+- [x] Overlay is draggable
+- [x] Bot pixel art is 12×12 cells at `OVERLAY_PIXEL_SIZE` px per cell
+- [x] Bot bobs smoothly (sine wave, 8 FPS, no jitter)
+- [x] Text font is monospace (Consolas or Courier)
+- [x] Close button is visible and functional
+- [x] Status bar shows current state (GOTOWY / SLUCHAM / TRANSKRYBUJE)
 
 ---
 

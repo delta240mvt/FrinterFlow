@@ -1,0 +1,66 @@
+# frinterflow/transcriber.py
+"""
+Wraps faster-whisper for local speech transcription.
+Model is loaded ONCE at startup (expensive — ~2-10s depending on size).
+Transcription runs in a daemon thread and posts results to result_queue.
+"""
+import os
+import threading
+import queue
+
+from faster_whisper import WhisperModel
+
+from frinterflow.config import (
+    WHISPER_MODEL_SIZE,
+    WHISPER_DEVICE,
+    WHISPER_COMPUTE_TYPE,
+    WHISPER_LANGUAGE,
+    WHISPER_BEAM_SIZE,
+)
+
+
+class Transcriber:
+    def __init__(self, result_queue: queue.Queue):
+        """
+        result_queue: receives transcribed text strings (str).
+        Empty recordings produce no queue item.
+        """
+        self.result_queue = result_queue
+        self._model: WhisperModel | None = None
+        self._lock = threading.Lock()
+
+    def load_model(self):
+        """
+        Blocking. Call once during startup before launching overlay.
+        Downloads model on first run (~500 MB for 'small').
+        """
+        self._model = WhisperModel(
+            WHISPER_MODEL_SIZE,
+            device=WHISPER_DEVICE,
+            compute_type=WHISPER_COMPUTE_TYPE,
+        )
+
+    def transcribe_async(self, wav_path: str):
+        """
+        Launch transcription in a daemon thread.
+        Posts result string to result_queue. Deletes wav_path when done.
+        """
+        t = threading.Thread(target=self._run, args=(wav_path,), daemon=True)
+        t.start()
+
+    def _run(self, wav_path: str):
+        with self._lock:  # prevent concurrent transcriptions
+            try:
+                segments, _ = self._model.transcribe(
+                    wav_path,
+                    language=WHISPER_LANGUAGE,
+                    beam_size=WHISPER_BEAM_SIZE,
+                )
+                text = " ".join(s.text.strip() for s in segments).strip()
+                if text:
+                    self.result_queue.put(text)
+            finally:
+                try:
+                    os.unlink(wav_path)
+                except OSError:
+                    pass
