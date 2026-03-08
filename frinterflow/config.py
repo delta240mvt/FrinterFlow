@@ -10,7 +10,7 @@ COLOR_DIM      = "#0d0d1a"   # Darker — status bar background
 COLOR_TEXT     = "#e0e0e0"   # Primary text
 
 # --- Whisper Model ---
-WHISPER_MODEL_SIZE   = "base"    # tiny | base | small | medium | large-v3
+WHISPER_MODEL_SIZE   = "small"    # tiny | base | small | medium | large-v3
 WHISPER_DEVICE       = "cpu"     # "cpu" or "cuda"
 WHISPER_COMPUTE_TYPE = "int8"    # "int8" (CPU) or "float16" (GPU)
 WHISPER_LANGUAGE     = "pl"      # "pl" | "en" | None (auto-detect)
